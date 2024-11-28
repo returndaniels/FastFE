@@ -1,0 +1,13 @@
+name = "FastFE"
+uuid = "b3090c29-4edf-4d0c-9f2f-f64d6ed8dacf"
+authors = ["Daniel Silva <returndaniels@gmail.com>"]
+version = "0.1.0"
+
+[deps]
+Plots = "91a5bcdd-55d7-5caf-9e0b-520d859cae80"
+FastGaussQuadrature = "442a2c76-b920-505d-bb47-c5924d526838"
+BenchmarkTools = "6e4b80f9-dd63-53aa-95a3-0cdb28fa8baf"
+DataFrames = "a93c6f00-e57d-5684-b7b6-d8193f3e46c0"
+
+[compat]
+julia = "1.8.1"
