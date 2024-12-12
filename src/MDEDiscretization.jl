@@ -17,7 +17,7 @@ const T = 1.0              # Limite superior do intervalo temporal
 const npg = 5              # Número de pontos de Gauss
 
 # Discretização no espaço
-const ne = 2^5             # Número de intervalos no espaço
+const ne = 2^6             # Número de intervalos no espaço
 const m = ne - 1           # Número de pontos no espaço (internos)
 const h = (b - a) / ne     # Passo no espaço
 
@@ -40,6 +40,9 @@ const φ2P = φ2.(P)
 const dφ1P = dφ1.(P)
 const dφ2P = dφ2.(P)
 
+# Avaliações de funções de forma multiplicadas pelos pesos nos pontos de Gauss
+const Wφ1P = W.*φ1.(P)
+const Wφ2P = W.*φ2.(P)
 ##################### Funções #####################
 
 """
@@ -54,8 +57,8 @@ Função solução da EDO que avalia a solução u no ponto (x, t).
 # Retorno
 - Valor de u avaliado no ponto (x, t).
 """
-function u(x::Float64, t::Float64)
-    return sin(π * x) * exp(-t) / (π^2)
+function u(x::Float64, t::Float64) # Função solução da EDO
+    return sin(pi*x)*exp(-t)/(pi^2)
 end
 
 """
@@ -70,7 +73,7 @@ Função inicial que avalia u0 no ponto x.
 - Valor de u0 avaliado no ponto x.
 """
 function u0(x::Float64)
-    return sin(π * x) / (π^2)
+    return sin(pi*x)/(pi^2)
 end
 
 """
@@ -85,7 +88,7 @@ Função que calcula a derivada de u0 no ponto x.
 - Valor da derivada de u0 no ponto x.
 """
 function du0(x::Float64)
-    return cos(π * x) / π
+    return cos(pi*x)/pi
 end
 
 """
@@ -116,7 +119,7 @@ Função f que avalia uma expressão no ponto (x, t).
 - Valor de f avaliado no ponto (x, t).
 """
 function f(x::Float64, t::Float64)
-    func = ((alpha * π^2 + beta - 1) * sin(π * x) + gamma * π * cos(π * x)) * exp(-t) / (π^2)
+    func = ((alpha*(pi^2) + beta - 1)*sin(pi*x) + gamma*pi*cos(pi*x))*exp(-t)/(pi^2)
     return func + g(u(x, t))
 end
 
@@ -131,8 +134,8 @@ Função que monta a matriz de conectividade do elemento finito.
 # Retorno
 - Matriz de conectividade.
 """
-function monta_LG(ne::Int64)
-    return transpose(hcat(1:ne, 2:ne+1))  # Cocatena as duas linhas horizontais
+function monta_LG(ne::Int64)::Matrix{Int64}
+    return hcat(1:ne, 2:ne+1) # Cocatena duas linhas horizontais [1, 2, ..., ne] e [2, 3, ..., ne+1]
 end
 
 """
@@ -146,6 +149,6 @@ Função que monta o vetor de numeração das funções phi.
 # Retorno
 - Vetor com a numeração das funções phi.
 """
-function monta_EQ(ne::Int64)
-    return vcat(ne, 1:(ne-1), ne)  # Concatena os números de elementos à esquerda e direita
+function monta_EQ(ne::Int64)::Vector{Int64}
+    return vcat(ne, 1:(ne-1), ne) # Concatena o número de elementos na esquerda e na direita do vetor [1, 2,..., ne-1]
 end
