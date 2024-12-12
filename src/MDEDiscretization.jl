@@ -1,6 +1,6 @@
 
 # Discretization of a Modern Differential Equations
-module VectorizedSolution
+module MDEDiscretization
 
 # Importa o pacote necessário para obter os pontos de Gauss e pesos
 using Quadrature
