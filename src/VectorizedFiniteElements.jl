@@ -65,7 +65,7 @@ function F_vectorized!(F_ext_vectorized::Vector{Float64}, X::Matrix{Float64}, f_
         @. f_eval = f(X)
         mul!(values, f_eval, WφP)
         @simd for i in 1:2
-        F_ext_vectorized[EQoLG[:, i]] .+= values[:, i]
+            F_ext_vectorized[EQoLG[:, i]] .+= values[:, i]
         end
             return (h/2)*F_ext_vectorized[1:ne-1]
     end
