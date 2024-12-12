@@ -1,4 +1,4 @@
-module FiniteElements
+module SerialFiniteElements
 
 using LinearAlgebra
 using SparseArrays
