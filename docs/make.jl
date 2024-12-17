@@ -7,7 +7,7 @@ using ..FastFE
 makedocs(
     repo = "github.com/returndaniels/FastFE", # Repositório do GitHub
     sitename = "Documentação FastFE.jl",  # Nome do site/documentação
-    modules = [FastFE],                    # Pacote a ser documentado
+    # modules = [FastFE],                    # Pacote a ser documentado
     pages = [
         "FastFE.jl" => "index.md",                 # Página principal da documentação
         "SerialFiniteElements.jl" => "serial-finite-elements.md",
@@ -22,3 +22,14 @@ makedocs(
     ],
     format = Documenter.HTML()                # Você pode escolher o formato HTML, Markdown, ou LaTeX
 )
+
+# if "deploy" in ARGS
+#     include("./env.jl")
+#   end
+  
+#   deploydocs(deps = nothing, make = nothing,
+#     repo = "github.com/USER_NAME/PROJECT_NAME.jl.git",
+#     target = "build",
+#     branch = "main",
+#     devbranch = "main",
+#   )
