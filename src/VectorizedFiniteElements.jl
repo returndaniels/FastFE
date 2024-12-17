@@ -2,7 +2,7 @@ module VectorizedFiniteElements
 
 using SparseArrays
 
-"""
+@doc raw"""
     K_vectorized(ne::Int64, m::Int64, h::Float64, npg::Int64,
                  alpha::Float64, beta::Float64, gamma::Float64, EQoLG::Matrix{Int64})::SparseMatrixCSC{Float64, Int64}
 
@@ -37,7 +37,7 @@ function K_vectorized(ne::Int64, m::Int64, h::Float64, npg::Int64,
     end
 end
 
-"""
+@doc raw"""
     F_vectorized!(F_ext_vectorized::Vector{Float64}, X::Matrix{Float64}, f_eval::Matrix{Float64}, values::Matrix{Float64},
                   f::Function, ne::Int64, m::Int64, h::Float64, npg::Int64, EQoLG::Matrix{Int64})::Vector{Float64}
 
@@ -71,7 +71,7 @@ function F_vectorized!(F_ext_vectorized::Vector{Float64}, X::Matrix{Float64}, f_
     end
 end
 
-"""
+@doc raw"""
     G_vectorized!(G_ext_vectorized::Vector{Float64}, g_eval::Matrix{Float64}, values::Matrix{Float64},
                   C::Vector{Float64}, ne::Int64, m::Int64, h::Float64, npg::Int64, EQoLG::Matrix{Int64})::Vector{Float64}
 

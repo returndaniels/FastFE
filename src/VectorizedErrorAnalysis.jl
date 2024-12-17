@@ -7,7 +7,7 @@ using Plots
 
 export erro_vectorized, calculate_errors
 
-"""
+@doc raw"""
     erro_vectorized(u::Function, X::Matrix{Float64}, u_eval::Matrix{Float64},
                     ne::Int64, m::Int64, h::Float64, npg::Int64, C::Vector{Float64}, EQoLG::Matrix{Int64})::Float64
 
@@ -27,7 +27,7 @@ function erro_vectorized(u::Function, X::Matrix{Float64}, u_eval::Matrix{Float64
     end
 end
 
-"""
+@doc raw"""
     calculate_errors(tam::Int64, u::Function, u0::Function, f::Function, EQoLG_func::Function, K_func::Function, C0_options::Function, α::Float64, β::Float64, γ::Float64, a::Float64, b::Float64, npg::Int64, option::Int64)
 
 Calculates and plots the error convergence for different discretizations.

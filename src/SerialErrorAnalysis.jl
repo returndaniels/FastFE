@@ -7,7 +7,7 @@ using Plots
 
 export calculate_errors_serial
 
-"""
+@doc raw"""
     calculate_errors_serial(tam::Int64, u::Function, u0::Function, f::Function, EQoLG_func::Function, 
                             K_func::Function, C0_options::Function, α::Float64, β::Float64, γ::Float64, 
                             a::Float64, b::Float64, npg::Int64, option::Int64)

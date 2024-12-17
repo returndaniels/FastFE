@@ -47,7 +47,7 @@ const WφP = [(W.*φ1P) (W.*φ2P)]
 
 ##################### Funções #####################
 
-"""
+@doc raw"""
     u(x::Float64, t::Float64) -> Float64
 
 Função solução da EDO que avalia a solução u no ponto (x, t).
@@ -63,7 +63,7 @@ function u(x::Float64, t::Float64) # Função solução da EDO
     return sin(pi*x)*exp(-t)/(pi^2)
 end
 
-"""
+@doc raw"""
     u0(x::Float64) -> Float64
 
 Função inicial que avalia u0 no ponto x.
@@ -78,7 +78,7 @@ function u0(x::Float64)
     return sin(pi*x)/(pi^2)
 end
 
-"""
+@doc raw"""
     du0(x::Float64) -> Float64
 
 Função que calcula a derivada de u0 no ponto x.
@@ -93,7 +93,7 @@ function du0(x::Float64)
     return cos(pi*x)/pi
 end
 
-"""
+@doc raw"""
     g(s::Float64) -> Float64
 
 Função no domínio de g.
@@ -108,7 +108,7 @@ function g(s::Float64)
     return s^3 - s
 end
 
-"""
+@doc raw"""
     f(x::Float64, t::Float64) -> Float64
 
 Função f que avalia uma expressão no ponto (x, t).
@@ -125,7 +125,7 @@ function f(x::Float64, t::Float64)
     return func + g(u(x, t))
 end
 
-"""
+@doc raw"""
     monta_LG(ne::Int64) -> Matrix{Int64}
 
 Função que monta a matriz de conectividade do elemento finito.
@@ -140,7 +140,7 @@ function monta_LG(ne::Int64)::Matrix{Int64}
     return hcat(1:ne, 2:ne+1) # Cocatena duas linhas horizontais [1, 2, ..., ne] e [2, 3, ..., ne+1]
 end
 
-"""
+@doc raw"""
     monta_EQ(ne::Int64) -> Vector{Int64}
 
 Função que monta o vetor de numeração das funções phi.

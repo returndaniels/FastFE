@@ -5,7 +5,7 @@ using SparseArrays
 
 # Funções de elementos finitos
 
-"""
+@doc raw"""
     K_serial(ne::Int64, m::Int64, h::Float64, npg::Int64,
              alpha::Float64, beta::Float64, gamma::Float64, EQoLG::Matrix{Int64})::SparseMatrixCSC{Float64, Int64}
 
@@ -51,7 +51,7 @@ function K_serial(ne::Int64, m::Int64, h::Float64, npg::Int64,
     end
 end
 
-"""
+@doc raw"""
     F_serial!(F_ext_serial::Vector{Float64}, x::Vector{Float64},
               f::Function, ne::Int64, m::Int64, h::Float64, npg::Int64, EQoLG::Matrix{Int64})::Vector{Float64}
 
@@ -89,7 +89,7 @@ function F_serial!(F_ext_serial::Vector{Float64}, x::Vector{Float64},
     end
 end
 
-"""
+@doc raw"""
     G_serial!(G_ext_serial::Vector{Float64}, C::Vector{Float64},
               ne::Int64, m::Int64, h::Float64, npg::Int64, EQoLG::Matrix{Int64})::Vector{Float64}
 
@@ -127,7 +127,7 @@ function G_serial!(G_ext_serial::Vector{Float64}, C::Vector{Float64},
     end
 end
 
-"""
+@doc raw"""
     erro_serial(u::Function, x::Vector{Float64}, ne::Int64, m::Int64, h::Float64, npg::Int64,
             C::Vector{Float64}, EQoLG::Matrix{Int64})::Float64
 
@@ -163,7 +163,7 @@ function erro_serial(u::Function, x::Vector{Float64}, ne::Int64, m::Int64, h::Fl
     end
 end
 
-"""
+@doc raw"""
     C0_options(op::Int64, u0::Function, a::Float64, ne::Int64, 
                 m::Int64, h::Float64, alpha::Float64, beta::Float64, 
                 gamma::Float64, npg::Int64, EQoLG::Matrix{Int64})::Vector{Float64}
