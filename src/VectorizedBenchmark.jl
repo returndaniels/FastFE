@@ -24,11 +24,16 @@ values = Matrix{Float64}(undef, ne, 2)
 F_ext_vectorized = zeros(Float64, ne)
 G_ext_vectorized = zeros(Float64, ne);
 
-@benchmark K_vectorized(ne, m, h, npg, alpha, beta, gamma, EQoLG)
-@benchmark F_vectorized!(F_ext_vectorized, X, f_eval, values, x -> f(x, 0.0), ne, m, h, npg, EQoLG)
-@benchmark G_vectorized!(G_ext_vectorized, g_eval, values, C0, ne, m, h, npg, EQoLG)
+output_K = @benchmark K_vectorized(ne, m, h, npg, alpha, beta, gamma, EQoLG)
+display(output_K)
 
-@benchmark begin
+output_F = @benchmark F_vectorized!(F_ext_vectorized, X, f_eval, values, x -> f(x, 0.0), ne, m, h, npg, EQoLG)
+display(output_F)
+
+output_G = @benchmark G_vectorized!(G_ext_vectorized, g_eval, values, C0, ne, m, h, npg, EQoLG)
+display(output_G)
+
+output_sys =@benchmark begin
     # Monta estrutura local global
     EQoLG = monta_EQ(ne)[monta_LG(ne)]
     
@@ -64,3 +69,4 @@ G_ext_vectorized = zeros(Float64, ne);
         C1 = Cn
     end
 end
+display(output_sys)

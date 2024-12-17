@@ -19,11 +19,16 @@ x = h*(P .+ 1)/2 .+ a
 F_ext_serial = zeros(Float64, ne)
 G_ext_serial = zeros(Float64, ne);
 
-@benchmark K_serial(ne, m, h, npg, alpha, beta, gamma, EQoLG)
-@benchmark F_serial!(F_ext_serial, x, x -> f(x, 0.0), ne, m, h, npg, EQoLG)
-@benchmark G_serial!(G_ext_serial, C0, ne, m, h, npg, EQoLG)
+output_K = @benchmark K_serial(ne, m, h, npg, alpha, beta, gamma, EQoLG)
+display(output_K)
 
-@benchmark begin    
+output_F = @benchmark F_serial!(F_ext_serial, x, x -> f(x, 0.0), ne, m, h, npg, EQoLG)
+display(output_F)
+
+output_G = @benchmark G_serial!(G_ext_serial, C0, ne, m, h, npg, EQoLG)
+display(output_G)
+
+output_sys = @benchmark begin
     # Monta estrutura local global
     EQoLG = monta_EQ(ne)[monta_LG(ne)]
 
@@ -54,3 +59,4 @@ G_ext_serial = zeros(Float64, ne);
         C1 = Cn
     end
 end
+display(output_sys)
