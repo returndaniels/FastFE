@@ -12,19 +12,19 @@ Os benchmarks abaixo representam os resultados da execução das funções na fo
 
 Este teste avalia o desempenho da função `K` na implementação serial.
 
-![K_serial](../src/assets/benchmark/K_serial.png)
+![K_serial](assets/benchmark/K_serial.png)
 
 ### Benchmark `F_serial`
 
 Neste teste, analisamos o comportamento da função `F` na forma serial.
 
-![F_serial](../src/assets/benchmark/F_serial.png)
+![F_serial](assets/benchmark/F_serial.png)
 
 ### Benchmark `G_serial`
 
 O gráfico a seguir demonstra o desempenho da função `G` quando executada serialmente.
 
-![G_serial](../src/assets/benchmark/G_serial.png)
+![G_serial](assets/benchmark/G_serial.png)
 
 ---
 
@@ -36,19 +36,19 @@ Nesta subseção, apresentamos os resultados dos benchmarks para as funções **
 
 O teste de desempenho da função `K` na implementação vetorizada é mostrado abaixo.
 
-![K_vectorized](../src/assets/benchmark/K_vectorized.png)
+![K_vectorized](assets/benchmark/K_vectorized.png)
 
 ### Benchmark `F_vectorized`
 
 Abaixo, avaliamos o desempenho da função `F` em sua forma vetorizada.
 
-![F_vectorized](../src/assets/benchmark/F_vectorized.png)
+![F_vectorized](assets/benchmark/F_vectorized.png)
 
 ### Benchmark `G_vectorized`
 
 Aqui, apresentamos o resultado do benchmark para a função `G` com implementação vetorizada.
 
-![G_vectorized](../src/assets/benchmark/G_vectorized.png)
+![G_vectorized](assets/benchmark/G_vectorized.png)
 
 ---
 
@@ -60,10 +60,10 @@ Para resolver o sistema linear, realizamos benchmarks comparando duas abordagens
 
 Neste teste, utilizamos a abordagem tradicional com laços explícitos para resolver o sistema linear.
 
-![sys_serial](../src/assets/benchmark/sys_serial.png)
+![sys_serial](assets/benchmark/sys_serial.png)
 
 ### Vetorizado
 
 Nesta abordagem, utilizamos técnicas de vetorizações para resolver o sistema linear de forma otimizada.
 
-![sys_vec](../src/assets/benchmark/sys_vec.png)
+![sys_vec](assets/benchmark/sys_vec.png)
