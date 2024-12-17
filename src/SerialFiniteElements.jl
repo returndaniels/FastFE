@@ -1,7 +1,10 @@
 module SerialFiniteElements
 
+include("./MDEDiscretization.jl")
+
 using LinearAlgebra
 using SparseArrays
+using .MDEDiscretization
 
 # Funções de elementos finitos
 
