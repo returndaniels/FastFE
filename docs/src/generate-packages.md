@@ -1,4 +1,4 @@
-# Como criar seu pacote em _Julia_
+# Como configurar seu pacote em _Julia_
 
 Para transformar seu projeto em Julia em um pacote, você deve seguir uma série de etapas que seguem as convenções padrão da linguagem. Isso facilita a instalação, o uso e o compartilhamento do pacote. Aqui está um guia para ajudá-lo:
 

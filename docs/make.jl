@@ -16,7 +16,8 @@ makedocs(
         "VectorizedErrorAnalysis.jl" => "vectorized-error-analysis.md",
         "MDEDiscretization.jl" => "mde-discretization.md",
         "Benchmark.jl" => "benchmark.md",
-        "Gerar pacotes" => "generate-packages.md",
+        "Criar e Registarar Pacotes" => "julia-package.md",
+        "Configurar pacotes" => "generate-packages.md",
         "Usando o Documenter.jl" => "using-documenter.md"
     ],
     format = Documenter.HTML()                # Você pode escolher o formato HTML, Markdown, ou LaTeX
