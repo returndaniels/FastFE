@@ -171,3 +171,11 @@ Definimos $\tilde{U}^{(1)} \in V_m$ como solução do seguinte problema:
 Determinamos uma aproximação para $U^{(1)} \in V_m$ que é a solução do seguinte problema:
 
 ![EQ31](../src/assets/math/eq31.png)
+
+## Comparando Solução Exata e Aproximada: Caso serial
+
+![serial_solucao_exata_vs_aproximada](../src/assets/examples/serial_solucao_exata_vs_aproximada.gif)
+
+## Comparando Solução Exata e Aproximada: Caso vetorizado
+
+![vec_solucao_exata_vs_aproximada](../src/assets/examples/vec_solucao_exata_vs_aproximada.gif)
