@@ -130,8 +130,8 @@ Isso vai gerar a documentação na pasta `docs/build/`. Você pode agora abrir a
 Se você quiser servir a documentação localmente enquanto faz alterações, use:
 
 ```julia
-using Documenter
-Documenter.serve("docs/build")
+using LiveServer
+LiveServer.serve(dir="docs/build")
 ```
 
 Isso vai abrir um servidor local e você poderá visualizar a documentação no seu navegador.
