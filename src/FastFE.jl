@@ -32,11 +32,11 @@ using DocStringExtensions: EXPORTS
 using Test: @testset, @test
 
 # Import internal modules
-include("VectorizedFiniteElements.jl")
-include("VectorizedErrorAnalysis.jl")
-include("SerialFiniteElements.jl")
-include("SerialErrorAnalysis.jl")
-include("MDEDiscretization.jl")
+include("./VectorizedFiniteElements.jl")
+include("./SerialFiniteElements.jl")
+include("./MDEDiscretization.jl")
+include("./VectorizedErrorAnalysis.jl")
+include("./SerialErrorAnalysis.jl")
 
 # Expose relevant symbols from internal modules
 export K_serial, F_serial!, G_serial!, erro_serial, C0_options,
@@ -47,8 +47,8 @@ export K_serial, F_serial!, G_serial!, erro_serial, C0_options,
     u, u0, du0, g, f, monta_LG, monta_EQ
 
 # Submodules and Aliases
-using .SerialFiniteElements: K_serial, F_serial!, G_serial!, erro_serial, C0_options
 using .VectorizedFiniteElements: K_vectorized, F_vectorized!, G_vectorized!
+using .SerialFiniteElements: K_serial, F_serial!, G_serial!, erro_serial, C0_options
 using .SerialErrorAnalysis: calculate_errors_serial
 using .VectorizedErrorAnalysis: erro_vectorized, calculate_errors
 using .MDEDiscretization: 
@@ -56,13 +56,13 @@ using .MDEDiscretization:
     φ1P, φ2P, dφ1P, dφ2P, Wφ1P, Wφ2P, WφP, u, u0, du0, g, f, monta_LG, monta_EQ
 
 # Version number of FastFE
-const FASTFE_VERSION = let
-    project = joinpath(dirname(dirname(pathof(FastFE))), "Project.toml")
-    Base.include_dependency(project)
-    toml = read(project, String)
-    m = match(r"(*ANYCRLF)^version\s*=\s\"(.*)\"$"m, toml)
-    VersionNumber(m[1])
-end
+# const FASTFE_VERSION = let
+#     project = joinpath(dirname(dirname(pathof(FastFE))), "Project.toml")
+#     Base.include_dependency(project)
+#     toml = read(project, String)
+#     m = match(r"(*ANYCRLF)^version\s*=\s\"(.*)\"$"m, toml)
+#     VersionNumber(m[1])
+# end
 
 # Documentation of key exports
 @doc raw"""

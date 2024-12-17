@@ -1,7 +1,11 @@
 module VectorizedErrorAnalysis
 
-using VectorizedFiniteElements
-using MDEDiscretization
+include("./VectorizedFiniteElements.jl")
+include("./MDEDiscretization.jl")
+
+using .VectorizedFiniteElements
+using .MDEDiscretization
+using SparseArrays
 using LinearAlgebra
 using Plots
 
@@ -28,11 +32,11 @@ function erro_vectorized(u::Function, X::Matrix{Float64}, u_eval::Matrix{Float64
 end
 
 @doc raw"""
-    calculate_errors(tam::Int64, u::Function, u0::Function, f::Function, EQoLG_func::Function, K_func::Function, C0_options::Function, α::Float64, β::Float64, γ::Float64, a::Float64, b::Float64, npg::Int64, option::Int64)
+    calculate_errors(tam::Int64, u::Function, u0::Function, f::Function, EQoLG::Matrix{Int64}, K::SparseMatrixCSC{Float64, Int64}, C0_options::Vector{Float64}, α::Float64, β::Float64, γ::Float64, a::Float64, b::Float64, npg::Int64, option::Int64)
 
 Calculates and plots the error convergence for different discretizations.
 """
-function calculate_errors(tam::Int64, u::Function, u0::Function, f::Function, EQoLG_func::Function, K_func::Function, C0_options::Function, α::Float64, β::Float64, γ::Float64, a::Float64, b::Float64, npg::Int64, option::Int64)
+function calculate_errors(tam::Int64, u::Function, u0::Function, f::Function, EQoLG::Matrix{Int64}, K::SparseMatrixCSC{Float64, Int64}, C0_options::Vector{Float64}, α::Float64, β::Float64, γ::Float64, a::Float64, b::Float64, npg::Int64, option::Int64)
     erros = zeros(tam - 1)
     hs = zeros(tam - 1)
 
@@ -44,7 +48,6 @@ function calculate_errors(tam::Int64, u::Function, u0::Function, f::Function, EQ
         h_er = (b - a) / ne_er
         tau_er = h_er
         hs[i - 1] = h_er
-        EQoLG = EQoLG_func(ne_er)
 
         # Initialize variables
         X = ((h_er / 2) * (P .+ 1) .+ a)' .+ range(a, step=h_er, stop=b - h_er)
@@ -57,8 +60,7 @@ function calculate_errors(tam::Int64, u::Function, u0::Function, f::Function, EQ
         x = h_er * (P .+ 1) / 2 .+ a
 
         # Compute linear system
-        M = K_func(ne_er, m_er, h_er, npg, 0., 1., 0., EQoLG)
-        K = K_func(ne_er, m_er, h_er, npg, α, β, γ, EQoLG)
+        M = K_vectorized(ne_er, m_er, h_er, npg, 0., 1., 0., EQoLG)
         MK = M / tau_er - K / 2
         LU_dec = lu(M / tau_er + K / 2)
 
@@ -89,7 +91,7 @@ function calculate_errors(tam::Int64, u::Function, u0::Function, f::Function, EQ
     # plot(hs, hs .^ 2, label="h^2", xlabel="h", title="Ordem de Convergência do Erro (Escala Log)", legend=:topright)
     # plot!(hs, erros, yscale=:log10, xscale=:log10, label="Erro")
 
-    return erros
+    return erros, hs
 end
 
 end # module

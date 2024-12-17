@@ -1,7 +1,11 @@
 module SerialErrorAnalysis
 
-using SerialFiniteElements
-using MDEDiscretization
+include("./SerialFiniteElements.jl")
+include("./MDEDiscretization.jl")
+
+using .SerialFiniteElements
+using .MDEDiscretization
+using SparseArrays
 using LinearAlgebra
 using Plots
 
@@ -9,13 +13,13 @@ export calculate_errors_serial
 
 @doc raw"""
     calculate_errors_serial(tam::Int64, u::Function, u0::Function, f::Function, EQoLG_func::Function, 
-                            K_func::Function, C0_options::Function, α::Float64, β::Float64, γ::Float64, 
+                            K::SparseMatrixCSC{Float64, Int64}, C0_options::Vector{Float64}, α::Float64, β::Float64, γ::Float64, 
                             a::Float64, b::Float64, npg::Int64, option::Int64)
 
 Calculates and plots the error convergence for different discretizations using a serial approach.
 """
 function calculate_errors_serial(tam::Int64, u::Function, u0::Function, f::Function, EQoLG_func::Function, 
-                                 K_func::Function, C0_options::Function, α::Float64, β::Float64, γ::Float64, 
+                                 K::SparseMatrixCSC{Float64, Int64}, C0_options::Vector{Float64}, α::Float64, β::Float64, γ::Float64, 
                                  a::Float64, b::Float64, npg::Int64, option::Int64)
     erros = zeros(tam - 1)
     hs = zeros(tam - 1)
@@ -41,8 +45,7 @@ function calculate_errors_serial(tam::Int64, u::Function, u0::Function, f::Funct
         x = h_er * (P .+ 1) / 2 .+ a
 
         # Compute linear system
-        M = K_func(ne_er, m_er, h_er, npg, 0., 1., 0., EQoLG)
-        K = K_func(ne_er, m_er, h_er, npg, α, β, γ, EQoLG)
+        M = K_serial(ne_er, m_er, h_er, npg, 0., 1., 0., EQoLG)
         MK = M / tau_er - K / 2
         LU_dec = lu(M / tau_er + K / 2)
 
