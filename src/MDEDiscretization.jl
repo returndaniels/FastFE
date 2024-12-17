@@ -3,7 +3,7 @@
 module MDEDiscretization
 
 # Importa o pacote necessário para obter os pontos de Gauss e pesos
-using Quadrature
+using FastGaussQuadrature
 
 # Parâmetros da EDO
 const beta = 1.0           # Beta da EDO
