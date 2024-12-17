@@ -1,6 +1,10 @@
 module VectorizedFiniteElements
 
+include("./MDEDiscretization.jl")
+
 using SparseArrays
+using LinearAlgebra
+using .MDEDiscretization
 
 @doc raw"""
     K_vectorized(ne::Int64, m::Int64, h::Float64, npg::Int64,
