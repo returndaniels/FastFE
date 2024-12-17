@@ -43,6 +43,8 @@ const dφ2P = dφ2.(P)
 # Avaliações de funções de forma multiplicadas pelos pesos nos pontos de Gauss
 const Wφ1P = W.*φ1.(P)
 const Wφ2P = W.*φ2.(P)
+const WφP = [(W.*φ1P) (W.*φ2P)]
+
 ##################### Funções #####################
 
 """
@@ -153,5 +155,5 @@ function monta_EQ(ne::Int64)::Vector{Int64}
     return vcat(ne, 1:(ne-1), ne) # Concatena o número de elementos na esquerda e na direita do vetor [1, 2,..., ne-1]
 end
 
-export beta, alpha, gamma, a, b, T, npg, ne, m, h, tau, N, P, W, φ1, φ2, dφ1, dφ2, φ1P, φ2P, dφ1P, dφ2P, Wφ1P, Wφ2P, u, u0, du0, g, f, monta_LG, monta_EQ
+export beta, alpha, gamma, a, b, T, npg, ne, m, h, tau, N, P, W, φ1, φ2, dφ1, dφ2, φ1P, φ2P, dφ1P, dφ2P, Wφ1P, Wφ2P, WφP, u, u0, du0, g, f, monta_LG, monta_EQ
 end
