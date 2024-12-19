@@ -9,22 +9,24 @@ using .MDEDiscretization
 # Funções de elementos finitos
 
 @doc raw"""
-    ($name)$(ne.value, m.value, h.value, npg.value, alpha.value, beta.value, gamma.value, EQoLG.value) -> SparseMatrixCSC
+    K_serial(ne::Int64, m::Int64, h::Float64, npg::Int64,
+             alpha::Float64, beta::Float64, gamma::Float64, EQoLG::Matrix{Int64})::SparseMatrixCSC{Float64, Int64}
 
-Calcula a matriz de rigidez global `K` a partir das matrizes locais de elementos finitos, utilizando integração numérica por pontos de Gauss.
+Calcula a matriz de rigidez global K a partir das matrizes locais, utilizando pontos de Gauss e pesos para a integração numérica.
+Essa função é implementada de forma sequencial.
 
 # Argumentos
-- `$ne.value`: Número de elementos finitos no domínio.
-- `$m.value`: Número de pontos no intervalo.
-- `$h.value`: Tamanho do passo no domínio espacial.
-- `$npg.value`: Número de pontos de Gauss utilizados na integração.
-- `$alpha.value`: Coeficiente do termo proporcional à derivada segunda na equação diferencial.
-- `$beta.value`: Coeficiente do termo proporcional à derivada primeira.
-- `$gamma.value`: Coeficiente do termo proporcional à função.
-- `$EQoLG.value`: Matriz de conectividade que mapeia os nós locais para os globais.
+- `ne::Int64`: Número de elementos finitos no domínio de `u`.
+- `m::Int64`: Número de pontos no intervalo `(a, b)`.
+- `h::Float64`: Tamanho do passo no espaço.
+- `npg::Int64`: Número de pontos de Gauss.
+- `alpha::Float64`: Coeficiente alpha na equação diferencial.
+- `beta::Float64`: Coeficiente beta na equação diferencial.
+- `gamma::Float64`: Coeficiente gamma na equação diferencial.
+- `EQoLG::Matrix{Int64}`: Matriz de mapeamento de elementos locais para globais.
 
 # Retorno
-Retorna uma matriz esparsa (`SparseMatrixCSC`) representando a matriz de rigidez global.
+Retorna uma matriz esparsa de tipo `SparseMatrixCSC{Float64, Int64}` com a matriz de rigidez global.
 """
 function K_serial(ne::Int64, m::Int64, h::Float64, npg::Int64,
     alpha::Float64, beta::Float64, gamma::Float64, EQoLG::Matrix{Int64})::SparseMatrixCSC{Float64, Int64}
@@ -53,23 +55,25 @@ function K_serial(ne::Int64, m::Int64, h::Float64, npg::Int64,
 end
 
 @doc raw"""
-    ($name)$(F_ext_serial.value, x.value, f.value, ne.value, m.value, h.value, npg.value, EQoLG.value) -> Vector{Float64}
+    F_serial!(F_ext_serial::Vector{Float64}, x::Vector{Float64},
+              f::Function, ne::Int64, m::Int64, h::Float64, npg::Int64, EQoLG::Matrix{Int64})::Vector{Float64}
 
-Calcula a contribuição das forças externas utilizando integração numérica por quadratura de Gauss.
+Calcula a quadratura gaussiana do vetor de forças externas `F_ext` associada à equação diferencial.
 
 # Argumentos
-- `$F_ext_serial.value`: Vetor de forças externas a ser preenchido.
-- `$x.value`: Pontos de Gauss no domínio.
-- `$f.value`: Função que representa o termo fonte na equação diferencial.
-- `$ne.value`: Número de elementos finitos.
-- `$m.value`: Número de pontos no intervalo.
-- `$h.value`: Tamanho do passo no domínio espacial.
-- `$npg.value`: Número de pontos de Gauss.
-- `$EQoLG.value`: Matriz de conectividade.
+- `F_ext_serial::Vector{Float64}`: Vetor de forças externas estendido a ser preenchido.
+- `x::Vector{Float64}`: Vetor de pontos de Gauss no domínio de `f`.
+- `f::Function`: Função que representa a equação diferencial.
+- `ne::Int64`: Número de elementos finitos no intervalo.
+- `m::Int64`: Número de pontos no intervalo `(a, b)`.
+- `h::Float64`: Tamanho do passo no espaço.
+- `npg::Int64`: Número de pontos de Gauss.
+- `EQoLG::Matrix{Int64}`: Matriz de mapeamento de elementos locais para globais.
 
 # Retorno
-Retorna o vetor de forças externas calculado.
+Retorna o vetor `F_ext_serial` com os valores calculados pela quadratura gaussiana.
 """
+
 function F_serial!(F_ext_serial::Vector{Float64}, x::Vector{Float64},
     f::Function, ne::Int64, m::Int64, h::Float64, npg::Int64, EQoLG::Matrix{Int64})::Vector{Float64}
     @views begin
@@ -89,21 +93,22 @@ function F_serial!(F_ext_serial::Vector{Float64}, x::Vector{Float64},
 end
 
 @doc raw"""
-    ($name)$(G_ext_serial.value, C.value, ne.value, m.value, h.value, npg.value, EQoLG.value) -> Vector{Float64}
+    G_serial!(G_ext_serial::Vector{Float64}, C::Vector{Float64},
+              ne::Int64, m::Int64, h::Float64, npg::Int64, EQoLG::Matrix{Int64})::Vector{Float64}
 
-Calcula a contribuição do termo não-linear associado à solução aproximada utilizando quadratura de Gauss.
+Calcula a quadratura gaussiana associada ao vetor `G_ext` considerando os coeficientes `C` da solução aproximada.
 
 # Argumentos
-- `$G_ext_serial.value`: Vetor para armazenar o resultado.
-- `$C.value`: Vetor de coeficientes da solução aproximada.
-- `$ne.value`: Número de elementos finitos.
-- `$m.value`: Número de pontos no intervalo.
-- `$h.value`: Tamanho do passo no domínio espacial.
-- `$npg.value`: Número de pontos de Gauss.
-- `$EQoLG.value`: Matriz de conectividade.
+- `G_ext_serial::Vector{Float64}`: Vetor de forças estendidas a ser preenchido.
+- `C::Vector{Float64}`: Vetor de coeficientes da solução aproximada `u`.
+- `ne::Int64`: Número de elementos finitos no intervalo.
+- `m::Int64`: Número de pontos no intervalo `(a, b)`.
+- `h::Float64`: Passo no domínio espacial.
+- `npg::Int64`: Número de pontos de Gauss.
+- `EQoLG::Matrix{Int64}`: Matriz de mapeamento de elementos locais para globais.
 
 # Retorno
-Retorna o vetor `G_ext_serial` com os valores calculados.
+Retorna o vetor `G_ext_serial` preenchido com os valores calculados pela quadratura gaussiana.
 """
 function G_serial!(G_ext_serial::Vector{Float64}, C::Vector{Float64},
     ne::Int64, m::Int64, h::Float64, npg::Int64, EQoLG::Matrix{Int64})::Vector{Float64}
@@ -126,22 +131,23 @@ function G_serial!(G_ext_serial::Vector{Float64}, C::Vector{Float64},
 end
 
 @doc raw"""
-    ($name)$(u.value, x.value, ne.value, m.value, h.value, npg.value, C.value, EQoLG.value) -> Float64
+    erro_serial(u::Function, x::Vector{Float64}, ne::Int64, m::Int64, h::Float64, npg::Int64,
+            C::Vector{Float64}, EQoLG::Matrix{Int64})::Float64
 
-Calcula o erro `L_2` entre a solução exata `u` e a solução aproximada representada pelos coeficientes `C`.
+Calcula o erro integral L2 entre a solução exata `u` e a solução aproximada representada pelos coeficientes `C`.
 
 # Argumentos
-- `$u.value: Função representando a solução exata.
-- `$x.value`: Pontos de Gauss no domínio.
-- `$ne.value`: Número de elementos finitos.
-- `$m.value`: Número de pontos no intervalo.
-- `$h.value`: Tamanho do passo no domínio espacial.
-- `$npg.value`: Número de pontos de Gauss.
-- `$C.value`: Vetor de coeficientes da solução aproximada.
-- `$EQoLG.value`: Matriz de conectividade.
+- `u::Function`: Função solução exata.
+- `x::Vector{Float64}`: Vetor de pontos de Gauss no domínio de `f`.
+- `ne::Int64`: Número de elementos finitos no domínio de `u`.
+- `m::Int64`: Número de pontos no intervalo `(a, b)`.
+- `h::Float64`: Tamanho do passo no espaço.
+- `npg::Int64`: Número de pontos de Gauss.
+- `C::Vector{Float64}`: Vetor com os coeficientes da solução aproximada.
+- `EQoLG::Matrix{Int64}`: Matriz de mapeamento de elementos locais para globais.
 
 # Retorno
-Retorna o valor do erro `L_2`.
+Retorna o erro L2 entre a solução exata `u` e a solução aproximada.
 """
 function erro_serial(u::Function, x::Vector{Float64}, ne::Int64, m::Int64, h::Float64, npg::Int64,
     C::Vector{Float64}, EQoLG::Matrix{Int64})::Float64
@@ -161,29 +167,31 @@ function erro_serial(u::Function, x::Vector{Float64}, ne::Int64, m::Int64, h::Fl
 end
 
 @doc raw"""
-    ($name)$(op.value, u0.value, a.value, ne.value, m.value, h.value, alpha.value, beta.value, gamma.value, npg.value, EQoLG.value) -> Vector{Float64}
+    C0_options(op::Int64, u0::Function, a::Float64, ne::Int64, 
+                m::Int64, h::Float64, alpha::Float64, beta::Float64, 
+                gamma::Float64, npg::Int64, EQoLG::Matrix{Int64})::Vector{Float64}
 
-Inicializa o vetor de coeficientes `C_0` com base na escolha de método.
+Calcula o vetor `C0` de coeficientes iniciais, dado o tipo de inicialização especificado.
 
 # Argumentos
-- `op::Int64`: Tipo de inicialização:
-    - `1`: Interpolação da condição inicial.
-    - `2`: Projeção `L_2`.
-    - `3`: Projeção `H`.
-    - `4`: Projeção com operador de rigidez.
-- `$u0.value`: Função da condição inicial.
-- `$a.value`: Limite inferior do domínio.
-- `@ne.value`: Número de elementos finitos.
-- `@m.value`: Número de pontos no intervalo.
-- `$h.value`: Tamanho do passo no domínio.
-- `$alpha.value`: Coeficiente da equação diferencial.
-- `$beta.value`: Coeficiente da equação diferencial.
-- `$gamma.value`: Coeficiente da equação diferencial.
-- `$npg.value`: Número de pontos de Gauss.
-- `$EQoLG.value`: Matriz de conectividade.
+- `op::Int64`: Opção de inicialização do vetor `C0`.
+    - `1`: Interpolação da condição inicial `u0`.
+    - `2`: Projeção L2 de `u0`.
+    - `3`: Projeção H de `u0`.
+    - `4`: Operador `k(u, v)` como projeção de `u0`.
+- `u0::Function`: Função que representa a condição inicial no tempo.
+- `a::Float64`: Limite inferior do domínio de `u`.
+- `ne::Int64`: Número de elementos finitos no domínio espacial.
+- `m::Int64`: Número de pontos no intervalo `(a, b)`.
+- `h::Float64`: Tamanho do passo no espaço.
+- `alpha::Float64`: Coeficiente alpha na equação diferencial.
+- `beta::Float64`: Coeficiente beta na equação diferencial.
+- `gamma::Float64`: Coeficiente gamma na equação diferencial.
+- `npg::Int64`: Número de pontos de Gauss.
+- `EQoLG::Matrix{Int64}`: Matriz de mapeamento de elementos locais para globais.
 
 # Retorno
-Retorna o vetor de coeficientes `C_0`.
+Retorna o vetor `C0` com os coeficientes iniciais, de acordo com a opção selecionada.
 """
 function C0_options(op::Int64, u0::Function, a::Float64, ne::Int64, m::Int64, h::Float64, npg::Int64, EQoLG::Matrix{Int64})::Vector{Float64}
     # Interpolante de u0

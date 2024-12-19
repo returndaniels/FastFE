@@ -48,13 +48,13 @@ const WφP = [(W.*φ1P) (W.*φ2P)]
 ##################### Funções #####################
 
 @doc raw"""
-    ($name)$(x.value, t.value) -> Float64
+    u(x::Float64, t::Float64) -> Float64
 
 Função solução da EDO que avalia a solução u no ponto (x, t).
 
 # Argumentos
-- `$x.value`: Ponto no domínio espacial de u.
-- `$t.value`: Ponto no domínio temporal de u.
+- `x::Float64`: Ponto no domínio espacial de u.
+- `t::Float64`: Ponto no domínio temporal de u.
 
 # Retorno
 - Valor de u avaliado no ponto (x, t).
@@ -64,12 +64,12 @@ function u(x::Float64, t::Float64) # Função solução da EDO
 end
 
 @doc raw"""
-    ($name)$(x.value) -> Float64
+    u0(x::Float64) -> Float64
 
 Função inicial que avalia u0 no ponto x.
 
 # Argumentos
-- `$x.value`: Ponto no domínio espacial de u.
+- `x::Float64`: Ponto no domínio espacial de u.
 
 # Retorno
 - Valor de u0 avaliado no ponto x.
@@ -79,12 +79,12 @@ function u0(x::Float64)
 end
 
 @doc raw"""
-    ($name)$(x.value) -> Float64
+    du0(x::Float64) -> Float64
 
 Função que calcula a derivada de u0 no ponto x.
 
 # Argumentos
-- `$x.value`: Ponto no domínio espacial de u.
+- `x::Float64`: Ponto no domínio espacial de u.
 
 # Retorno
 - Valor da derivada de u0 no ponto x.
@@ -94,12 +94,12 @@ function du0(x::Float64)
 end
 
 @doc raw"""
-    ($name)$(s.value) -> Float64
+    g(s::Float64) -> Float64
 
 Função no domínio de g.
 
 # Argumentos
-- `$s.value`: Ponto no domínio de g.
+- `s::Float64`: Ponto no domínio de g.
 
 # Retorno
 - Valor de g no ponto s.
@@ -109,13 +109,13 @@ function g(s::Float64)
 end
 
 @doc raw"""
-    ($name)$(x.value, t.value) -> Float64
+    f(x::Float64, t::Float64) -> Float64
 
 Função f que avalia uma expressão no ponto (x, t).
 
 # Argumentos
-- `$x.value`: Ponto no domínio espacial de f.
-- `$t.value`: Ponto no domínio temporal de f.
+- `x::Float64`: Ponto no domínio espacial de f.
+- `t::Float64`: Ponto no domínio temporal de f.
 
 # Retorno
 - Valor de f avaliado no ponto (x, t).
@@ -126,7 +126,7 @@ function f(x::Float64, t::Float64)
 end
 
 @doc raw"""
-    ($name)$(ne.value) -> Matrix{Int64}
+    monta_LG(ne::Int64) -> Matrix{Int64}
 
 Função que monta a matriz de conectividade do elemento finito.
 
@@ -141,7 +141,7 @@ function monta_LG(ne::Int64)::Matrix{Int64}
 end
 
 @doc raw"""
-    ($name)$(ne.value) -> Vector{Int64}
+    monta_EQ(ne::Int64) -> Vector{Int64}
 
 Função que monta o vetor de numeração das funções phi.
 
