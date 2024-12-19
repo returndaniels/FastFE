@@ -1,4 +1,4 @@
-# Documentação do módulo `SerialFiniteElements`
+# DSerialFiniteElements.jl
 
 Este módulo fornece funções para resolver problemas de elementos finitos utilizando métodos sequenciais. As funções implementadas incluem o cálculo da matriz de rigidez global, o vetor de forças externas, e a solução para o erro integral L2, entre outras operações de discretização e integração numérica.
 

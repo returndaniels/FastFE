@@ -1,4 +1,4 @@
-# Como utilizar **Documenter.jl** em seu projeto
+# Documentação
 
 O pacote **Documenter.jl** é uma ferramenta poderosa para gerar documentação de pacotes na linguagem Julia. Ele permite que você escreva documentação em markdown dentro do seu código e, em seguida, gere documentação estática ou interativa. Vou te guiar nos principais passos para usar o **Documenter.jl** para documentar seu pacote Julia.
 

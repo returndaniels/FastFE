@@ -1,6 +1,6 @@
 Aqui está a documentação traduzida para o português:
 
-# Módulo VectorizedErrorAnalysis
+# VectorizedErrorAnalysis.jl
 
 Este módulo fornece uma abordagem vetorizada para a análise de erros em discretizações de elementos finitos. Ele inclui funções para calcular os erros em aproximações de soluções e para plotar a convergência de erros para diferentes discretizações.
 

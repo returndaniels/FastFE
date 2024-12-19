@@ -1,4 +1,4 @@
-# Módulo `VectorizedFiniteElements`
+# VectorizedFiniteElements.jl
 
 Este módulo contém funções otimizadas para o cálculo de matrizes de rigidez e vetores de forças externas utilizando o método dos elementos finitos (FEM), com o uso de vetorização para melhorar a eficiência computacional.
 

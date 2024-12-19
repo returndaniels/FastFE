@@ -1,16 +1,18 @@
-# Módulo SerialErrorAnalysis
+# SerialErrorAnalysis.jl
 
 Este módulo fornece uma abordagem serial para o cálculo da análise de erro em discretizações de elementos finitos. Ele inclui funções para calcular os erros nas aproximações das soluções e para plotar a convergência do erro para diferentes discretizações.
 
 ## Funções
 
-### `calculate_errors_serial(tam::Int64, u::Function, u0::Function, f::Function, EQoLG_func::Function, 
-                             K_func::Function, C0_options::Function, α::Float64, β::Float64, γ::Float64, 
+### `calculate_errors_serial(tam::Int64, u::Function, u0::Function, f::Function, EQoLG_func::Function,
+
+                             K_func::Function, C0_options::Function, α::Float64, β::Float64, γ::Float64,
                              a::Float64, b::Float64, npg::Int64, option::Int64)`
 
 Calcula e plota a convergência do erro para diferentes discretizações utilizando uma abordagem serial.
 
 #### Argumentos:
+
 - `tam::Int64`: O número máximo de elementos na discretização.
 - `u::Function`: A função que representa a solução exata.
 - `u0::Function`: A função que representa a condição inicial.
@@ -27,6 +29,7 @@ Calcula e plota a convergência do erro para diferentes discretizações utiliza
 - `option::Int64`: Uma flag para selecionar diferentes opções de coeficientes.
 
 #### Retorna:
+
 - `Vector{Float64}`: Um vetor com os valores de erro para cada discretização.
 
 #### Exemplo de uso:
