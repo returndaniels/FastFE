@@ -12,10 +12,23 @@ using Plots
 export erro_vectorized, calculate_errors
 
 @doc raw"""
-    erro_vectorized(u::Function, X::Matrix{Float64}, u_eval::Matrix{Float64},
-                    ne::Int64, m::Int64, h::Float64, npg::Int64, C::Vector{Float64}, EQoLG::Matrix{Int64})::Float64
+    ($name)$(u.value, X.value, u_eval.value, ne.value, m.value, h.value, npg.value, C.value, EQoLG.value) -> Float64
 
-Calculates the error for a given approximation using a vectorized approach.
+Calcula o erro para uma aproximação dada usando uma abordagem vetorizada.
+
+# Argumentos
+- `$u.value`: Função solução que avalia `u` no domínio.
+- `$X.value`: Matriz de coordenadas dos pontos do domínio espacial.
+- `$u_eval.value`: Matriz para armazenar os valores avaliados de `u`.
+- `$ne.value`: Número de elementos no domínio.
+- `$m.value`: Número de nós no domínio.
+- `$h.value`: Tamanho do passo no domínio espacial.
+- `$npg.value`: Número de pontos de Gauss para integração.
+- `$C.value`: Vetor de coeficientes para a solução aproximada.
+- `$EQoLG.value`: Matriz para mapear elementos locais em nós globais.
+
+# Retorno
+- O erro calculado como um número de ponto flutuante.
 """
 function erro_vectorized(u::Function, X::Matrix{Float64}, u_eval::Matrix{Float64},
                          ne::Int64, m::Int64, h::Float64, npg::Int64, C::Vector{Float64}, EQoLG::Matrix{Int64})::Float64
@@ -32,9 +45,28 @@ function erro_vectorized(u::Function, X::Matrix{Float64}, u_eval::Matrix{Float64
 end
 
 @doc raw"""
-    calculate_errors(tam::Int64, u::Function, u0::Function, f::Function, EQoLG::Matrix{Int64}, K::SparseMatrixCSC{Float64, Int64}, C0_options::Vector{Float64}, α::Float64, β::Float64, γ::Float64, a::Float64, b::Float64, npg::Int64, option::Int64)
+    ($name)$(tam.value, u.value, u0.value, f.value, EQoLG.value, K.value, C0_options.value, α.value, β.value, γ.value, a.value, b.value, npg.value, option.value)
 
-Calculates and plots the error convergence for different discretizations.
+Calcula e plota a convergência do erro para diferentes discretizações.
+
+# Argumentos
+- `$tam.value`: Tamanho do domínio ou número de discretizações.
+- `$u.value`: Função solução que avalia `u` no domínio.
+- `$u0.value`: Função inicial para a análise.
+- `$f.value`: Função forçante no domínio.
+- `$EQoLG.value`: Matriz para mapear elementos locais em nós globais.
+- `$K.value`: Matriz esparsa de coeficientes.
+- `$C0_options.value`: Vetor de opções para a constante inicial `C0`.
+- `$α.value`: Parâmetro alfa para a análise.
+- `$β.value`: Parâmetro beta para a análise.
+- `$γ.value`: Parâmetro gama para a análise.
+- `$a.value`: Limite inferior do domínio.
+- `$b.value`: Limite superior do domínio.
+- `$npg.value`: Número de pontos de Gauss para integração.
+- `$option.value`: Opção para configuração ou modo de análise.
+
+# Retorno
+- Um vetor de erros máximos para diferentes discretizações e o vetor de tamanhos de passo.
 """
 function calculate_errors(tam::Int64, u::Function, u0::Function, f::Function, EQoLG::Matrix{Int64}, K::SparseMatrixCSC{Float64, Int64}, C0_options::Vector{Float64}, α::Float64, β::Float64, γ::Float64, a::Float64, b::Float64, npg::Int64, option::Int64)
     erros = zeros(tam - 1)

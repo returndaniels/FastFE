@@ -12,11 +12,30 @@ using Plots
 export calculate_errors_serial
 
 @doc raw"""
-    calculate_errors_serial(tam::Int64, u::Function, u0::Function, f::Function, EQoLG_func::Function, 
-                            K::SparseMatrixCSC{Float64, Int64}, C0_options::Vector{Float64}, α::Float64, β::Float64, γ::Float64, 
-                            a::Float64, b::Float64, npg::Int64, option::Int64)
+    ($name)$(tam.value, u.value, u0.value, f.value, EQoLG_func.value, 
+                            K.value, C0_options.value, α.value, β.value, γ.value, 
+                            a.value, b.value, npg.value, option.value)
 
-Calculates and plots the error convergence for different discretizations using a serial approach.
+Calcula e plota a convergência do erro para diferentes discretizações usando uma abordagem serial.
+
+# Argumentos
+- `$tam.value`: Tamanho do domínio ou grade para a análise.
+- `$u.value`: Função solução que avalia `u` no domínio.
+- `$u0.value`: Função inicial para a análise.
+- `$f.value`: Função forçante no domínio.
+- `$EQoLG_func.value`: Função para cálculo de uma equação de linha geral.
+- `$K.value`: Matriz esparsa de coeficientes.
+- `$C0_options.value`: Vetor com opções para a constante inicial `C0`.
+- `$α.value`: Parâmetro alfa para a análise.
+- `$β.value`: Parâmetro beta para a análise.
+- `$γ.value`: Parâmetro gama para a análise.
+- `$a.value`: Limite inferior do domínio.
+- `$b.value`: Limite superior do domínio.
+- `$npg.value`: Número de pontos de grade.
+- `$option.value`: Opção para configuração ou modo de análise.
+
+# Retorno
+- Um gráfico da convergência do erro para diferentes discretizações.
 """
 function calculate_errors_serial(tam::Int64, u::Function, u0::Function, f::Function, EQoLG_func::Function, 
                                  K::SparseMatrixCSC{Float64, Int64}, C0_options::Vector{Float64}, α::Float64, β::Float64, γ::Float64, 
