@@ -8,7 +8,7 @@ using .MDEDiscretization
 
 # Funções de elementos finitos
 
-"""
+@doc raw"""
     ($name)$(ne.value, m.value, h.value, npg.value, alpha.value, beta.value, gamma.value, EQoLG.value) -> SparseMatrixCSC
 
 Calcula a matriz de rigidez global `K` a partir das matrizes locais de elementos finitos, utilizando integração numérica por pontos de Gauss.
@@ -52,7 +52,7 @@ function K_serial(ne::Int64, m::Int64, h::Float64, npg::Int64,
     end
 end
 
-"""
+@doc raw"""
     ($name)$(F_ext_serial.value, x.value, f.value, ne.value, m.value, h.value, npg.value, EQoLG.value) -> Vector{Float64}
 
 Calcula a contribuição das forças externas utilizando integração numérica por quadratura de Gauss.
@@ -88,7 +88,7 @@ function F_serial!(F_ext_serial::Vector{Float64}, x::Vector{Float64},
     end
 end
 
-"""
+@doc raw"""
     ($name)$(G_ext_serial.value, C.value, ne.value, m.value, h.value, npg.value, EQoLG.value) -> Vector{Float64}
 
 Calcula a contribuição do termo não-linear associado à solução aproximada utilizando quadratura de Gauss.
@@ -125,7 +125,7 @@ function G_serial!(G_ext_serial::Vector{Float64}, C::Vector{Float64},
     end
 end
 
-"""
+@doc raw"""
     ($name)$(u.value, x.value, ne.value, m.value, h.value, npg.value, C.value, EQoLG.value) -> Float64
 
 Calcula o erro `L_2` entre a solução exata `u` e a solução aproximada representada pelos coeficientes `C`.
@@ -160,7 +160,7 @@ function erro_serial(u::Function, x::Vector{Float64}, ne::Int64, m::Int64, h::Fl
     end
 end
 
-"""
+@doc raw"""
     ($name)$(op.value, u0.value, a.value, ne.value, m.value, h.value, alpha.value, beta.value, gamma.value, npg.value, EQoLG.value) -> Vector{Float64}
 
 Inicializa o vetor de coeficientes `C_0` com base na escolha de método.
