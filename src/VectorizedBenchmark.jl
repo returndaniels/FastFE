@@ -24,7 +24,7 @@ option = 1 # Opção de como calcula C0
 # Monta estrutura local global
 EQoLG = monta_EQ(ne)[monta_LG(ne)]
 # Calcula o C0 inicial
-C0 = C0_options(option, u0, a, ne, m, h, npg, EQoLG)
+C0_ext = [C0_options(option, u0, a, ne, m, h, npg, EQoLG); 0]
 
 # Estruturas externas usadas pelas funções
 X = ((h/2)*(P .+ 1) .+ a)' .+ range(a, step=h, stop=b-h)
@@ -41,7 +41,7 @@ display(output_K)
 output_F = benchmark(F_vectorized!, (F_ext_vectorized, X, f_eval, values, x -> f(x, 0.0), ne, m, h, npg, EQoLG), samples, evals=evals)
 display(output_F)
 
-output_G = benchmark(G_vectorized!, (G_ext_vectorized, g_eval, values, C0, ne, m, h, npg, EQoLG), samples, evals=evals)
+output_G = benchmark(G_vectorized!, (G_ext_vectorized, g_eval, values, C0_ext, ne, m, h, npg, EQoLG), samples, evals=evals)
 display(output_G)
 
 output_sys = @benchmark begin
@@ -56,38 +56,67 @@ output_sys = @benchmark begin
     values = Matrix{Float64}(undef, ne, 2)
     F_ext_vectorized = zeros(Float64, ne)
     G_ext_vectorized = zeros(Float64, ne)
-    
+
+    # Pré-aloca mmeória para o lado direito do sistema linear
+    B = zeros(Float64, ne-1)
+
     # Montando o sistema linear
-    M = K_vectorized(ne, m, h, npg, 0., 1., 0., EQoLG)
-    K = K_vectorized(ne, m, h, npg, alpha, beta, gamma, EQoLG)
+    M = K_vectorized(ne, m, h, npg, 0., 1., 0., EQoLG)[1:ne-1, 1:ne-1]
+    K = K_vectorized(ne, m, h, npg, alpha, beta, gamma, EQoLG)[1:ne-1, 1:ne-1]
+    
     MK = M/tau - K/2
     # Decomposição LU para resolução de múltiplos sistemas
     LU_dec = lu(M/tau + K/2)
     
     # Aproximação de U0
-    C0 = C0_options(1, u0, a, ne, m, h, npg, EQoLG)
+    C0_ext = [C0_options(1, u0, a, ne, m, h, npg, EQoLG); 0]
+    C0 = @view C0_ext[1:ne-1]
+    MKC0 = MK*C0
+
     # Aproximação de U1
-    C1_tiu = LU_dec\(F_vectorized!(F_ext_vectorized, X, f_eval, values, x -> f(x, tau*0.5), ne, m, h, npg, EQoLG) + MK*C0 -
-             G_vectorized!(G_ext_vectorized, g_eval, values, C0, ne, m, h, npg, EQoLG))
-    C1 = LU_dec\(F_vectorized!(F_ext_vectorized, X, f_eval, values, x -> f(x, tau*0.5), ne, m, h, npg, EQoLG) + MK*C0 -
-         G_vectorized!(G_ext_vectorized, g_eval, values, (C0 + C1_tiu)/2, ne, m, h, npg, EQoLG))
+    F_vectorized!(F_ext_vectorized, X, f_eval, values, x -> f(x, tau*0.5), ne, m, h, npg, EQoLG)
+    F = @view F_ext_vectorized[1:ne-1]
+    G_vectorized!(G_ext_vectorized, g_eval, values, C0_ext, ne, m, h, npg, EQoLG)
+    G = @view G_ext_vectorized[1:ne-1]
+    C1_ext_tiu = zeros(Float64, ne)
+    B .= F
+    B .+= MKC0
+    B .-= G
+    C1_ext_tiu[1:ne-1] .= LU_dec\B
+    
+    G_vectorized!(G_ext_vectorized, g_eval, values, (C0_ext + C1_ext_tiu)/2, ne, m, h, npg, EQoLG)
+    G = @view G_ext_vectorized[1:ne-1]
+    C1_ext = zeros(Float64, ne)
+    B .= F
+    B .+= MKC0
+    B .-= G
+    C1_ext[1:ne-1] = LU_dec\B
     
     # Pré-aloca memória para operações repetidas
-    Cn = zeros(Float64, ne-1)
-    G_C = zeros(Float64, ne-1)
-    MK_C1 = zeros(Float64, ne-1)
+    Cn_ext = zeros(Float64, ne)
+    G_C_ext = zeros(Float64, ne)
+    MKC1 = zeros(Float64, ne-1)
     @views @simd for n in 2:N
-        # Cálculo sem consumo extra de memória
-        G_C .= 3*C1
-        G_C .-= C0
-        G_C ./= 2
-        MK_C1 .= MK*C1
-        ######################################
-        Cn .= LU_dec\(F_vectorized!(F_ext_vectorized, X, f_eval, values, x -> f(x, tau*(n-0.5)), ne, m, h, npg, EQoLG) + MK*C1 -
-            G_vectorized!(G_ext_vectorized, g_eval, values, G_C, ne, m, h, npg, EQoLG))
-        # Solução aproximada
-        C0 .= C1
-        C1 .= Cn
+        ############ Cálculo sem consumo extra de memória ############
+        F_vectorized!(F_ext_vectorized, X, f_eval, values, x -> f(x, tau*(n-0.5)), ne, m, h, npg, EQoLG)
+        F = F_ext_vectorized[1:ne-1]
+
+        MKC1 .= MK*(C1_ext[1:ne-1])
+        
+        G_C_ext[1:ne-1] .= 3*(C1_ext[1:ne-1])
+        G_C_ext[1:ne-1] .-= C0_ext[1:ne-1]
+        G_C_ext[1:ne-1] ./= 2
+        G_vectorized!(G_ext_vectorized, g_eval, values, G_C_ext, ne, m, h, npg, EQoLG)
+        G = G_ext_vectorized[1:ne-1]
+
+        B .= F
+        B .+= MKC1
+        B .-= G
+        ##############################################################
+        # Calcula o próximo coeficiente e atualiza
+        Cn_ext[1:ne-1] .= LU_dec\B
+        C0_ext[1:ne-1] .= C1_ext[1:ne-1]
+        C1_ext[1:ne-1] .= Cn_ext[1:ne-1]
     end
 end samples=samples_sys evals=evals_sys
 display(output_sys)

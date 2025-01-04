@@ -29,14 +29,18 @@ Essa função é implementada de forma sequencial.
 Retorna uma matriz esparsa de tipo `SparseMatrixCSC{Float64, Int64}` com a matriz de rigidez global.
 """
 function K_serial(ne::Int64, m::Int64, h::Float64, npg::Int64,
-    alpha::Float64, beta::Float64, gamma::Float64, EQoLG::Matrix{Int64})::SparseMatrixCSC{Float64, Int64}
+                  alpha::Float64, beta::Float64, gamma::Float64, EQoLG::Matrix{Int64})::SparseMatrixCSC{Float64, Int64}
     @views begin
+        # Alocando a matriz K estendida
         K = spzeros(Float64, ne, ne)
+        # Construindo a K local
         K_local = zeros(Float64, 2, 2)
         K_local[1, 1] = dot(W, 2*alpha*(dφ1P.*dφ1P)/h + gamma*(φ1P.*dφ1P) + beta*h*(φ1P.*φ1P)/2)
         K_local[1, 2] = dot(W, 2*alpha*(dφ1P.*dφ2P)/h + gamma*(φ1P.*dφ2P) + beta*h*(φ1P.*φ2P)/2)
         K_local[2, 1] = dot(W, 2*alpha*(dφ2P.*dφ1P)/h + gamma*(φ2P.*dφ1P) + beta*h*(φ2P.*φ1P)/2)
         K_local[2, 2] = dot(W, 2*alpha*(dφ2P.*dφ2P)/h + gamma*(φ2P.*dφ2P) + beta*h*(φ2P.*φ2P)/2)
+        # Construindo a K global a partir da K local
+        # Lista para armazenar entradas da matriz esparsa
         I, J, V = zeros(Int64, 4*ne), zeros(Int64, 4*ne), zeros(Float64, 4*ne)
         @simd for idx in 0:3
             i = div(idx, 2) + 1
@@ -49,8 +53,9 @@ function K_serial(ne::Int64, m::Int64, h::Float64, npg::Int64,
                 V[e + offset] = K_local[i, j]
             end
         end
+        # Construindo a matriz esparsa com os valores acumulados
         K = sparse(I, J, V, ne, ne)
-        return K[1:(ne-1),1:(ne-1)]
+        return K
     end
 end
 
@@ -75,9 +80,11 @@ Retorna o vetor `F_ext_serial` com os valores calculados pela quadratura gaussia
 """
 
 function F_serial!(F_ext_serial::Vector{Float64}, x::Vector{Float64},
-    f::Function, ne::Int64, m::Int64, h::Float64, npg::Int64, EQoLG::Matrix{Int64})::Vector{Float64}
+                   f::Function, ne::Int64, m::Int64, h::Float64, npg::Int64, EQoLG::Matrix{Int64})
     @views begin
+        # Zera o vetor F_ext
         fill!(F_ext_serial, 0.0)
+        # Acumula no vetor F estendido os valores de Fᵉ
         @simd for e in 1:ne
             offset = (e-1)*h
             i = EQoLG[e, 1]
@@ -88,7 +95,6 @@ function F_serial!(F_ext_serial::Vector{Float64}, x::Vector{Float64},
                 F_ext_serial[j] += Wφ2P[g]*f_eval
             end
         end
-        return F_ext_serial[1:(ne-1)]
     end
 end
 
@@ -110,11 +116,11 @@ Calcula a quadratura gaussiana associada ao vetor `G_ext` considerando os coefic
 # Retorno
 Retorna o vetor `G_ext_serial` preenchido com os valores calculados pela quadratura gaussiana.
 """
-function G_serial!(G_ext_serial::Vector{Float64}, C::Vector{Float64},
-    ne::Int64, m::Int64, h::Float64, npg::Int64, EQoLG::Matrix{Int64})::Vector{Float64}
+function G_serial!(G_ext_serial::Vector{Float64}, C_ext::Vector{Float64},
+                   ne::Int64, m::Int64, h::Float64, npg::Int64, EQoLG::Matrix{Int64})
     @views begin
+        # Zera o vetor G estendido
         fill!(G_ext_serial, 0.0)
-        C_ext = [C;0]
         @simd for e in 1:ne
             i = EQoLG[e, 1]
             j = EQoLG[e, 2]
@@ -126,7 +132,6 @@ function G_serial!(G_ext_serial::Vector{Float64}, C::Vector{Float64},
                 G_ext_serial[j] += Wφ2P[p]*g_eval
             end
         end
-        return G_ext_serial[1:(ne-1)]
     end
 end
 
