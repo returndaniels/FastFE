@@ -41,7 +41,7 @@ include("./SerialErrorAnalysis.jl")
 # Expose relevant symbols from internal modules
 export K_serial, F_serial!, G_serial!, erro_serial, C0_options,
     K_vectorized, F_vectorized!, G_vectorized!,
-    calculate_errors_serial, erro_vectorized, calculate_errors,
+    calculate_errors_serial, erro_vectorized, calculate_errors_vectorized,
     beta, alpha, gamma, a, b, T, npg, ne, m, h, tau, N, P, W, 
     φ1, φ2, dφ1, dφ2, φ1P, φ2P, dφ1P, dφ2P, Wφ1P, Wφ2P, WφP, 
     u, u0, du0, g, f, monta_LG, monta_EQ
@@ -50,7 +50,7 @@ export K_serial, F_serial!, G_serial!, erro_serial, C0_options,
 using .VectorizedFiniteElements: K_vectorized, F_vectorized!, G_vectorized!
 using .SerialFiniteElements: K_serial, F_serial!, G_serial!, erro_serial, C0_options
 using .SerialErrorAnalysis: calculate_errors_serial
-using .VectorizedErrorAnalysis: erro_vectorized, calculate_errors
+using .VectorizedErrorAnalysis: erro_vectorized, calculate_errors_vectorized
 using .MDEDiscretization: 
     beta, alpha, gamma, a, b, T, npg, ne, m, h, tau, N, P, W, φ1, φ2, dφ1, dφ2, 
     φ1P, φ2P, dφ1P, dφ2P, Wφ1P, Wφ2P, WφP, u, u0, du0, g, f, monta_LG, monta_EQ

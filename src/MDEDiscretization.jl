@@ -17,12 +17,12 @@ const T = 1.0              # Limite superior do intervalo temporal
 const npg = 5              # Número de pontos de Gauss
 
 # Discretização no espaço
-const ne = 2^6             # Número de intervalos no espaço
+const ne = 2^6            # Número de intervalos no espaço
 const m = ne - 1           # Número de pontos no espaço (internos)
 const h = (b - a) / ne     # Passo no espaço
 
 # Discretização no tempo
-const tau = h              # Passo no tempo
+const tau = 1/10              # Passo no tempo
 const N = trunc(Int, T / tau)  # Número de intervalos no tempo
 
 # Obtém os pontos de Gauss e seus pesos

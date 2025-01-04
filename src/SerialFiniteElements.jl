@@ -155,9 +155,9 @@ Calcula o erro integral L2 entre a solução exata `u` e a solução aproximada 
 Retorna o erro L2 entre a solução exata `u` e a solução aproximada.
 """
 function erro_serial(u::Function, x::Vector{Float64}, ne::Int64, m::Int64, h::Float64, npg::Int64,
-    C::Vector{Float64}, EQoLG::Matrix{Int64})::Float64
+    C_ext, EQoLG::Matrix{Int64})::Float64
     @views begin
-        C_ext = [C;0]
+        C_ext[end] = 0
         sum_er = 0
         @simd for e in 1:ne
             C1 = C_ext[EQoLG[e, 1]]
