@@ -4,6 +4,7 @@ module MDEDiscretization
 
 # Importa o pacote necessário para obter os pontos de Gauss e pesos
 using FastGaussQuadrature
+using StaticArrays
 
 # Parâmetros da EDO
 const beta = 1.0           # Beta da EDO
@@ -35,15 +36,15 @@ const dφ1(ξ) = -0.5
 const dφ2(ξ) = 0.5
 
 # Avaliações de funções de forma e suas derivadas nos pontos de Gauss
-const φ1P = φ1.(P)
-const φ2P = φ2.(P)
-const dφ1P = dφ1.(P)
-const dφ2P = dφ2.(P)
+const φ1P = @SVector [φ1(p) for p in P]
+const φ2P = @SVector [φ2(p) for p in P]
+const dφ1P = @SVector [dφ1(p) for p in P]
+const dφ2P = @SVector [dφ2(p) for p in P]
 
 # Avaliações de funções de forma multiplicadas pelos pesos nos pontos de Gauss
-const Wφ1P = W.*φ1.(P)
-const Wφ2P = W.*φ2.(P)
-const WφP = [(W.*φ1P) (W.*φ2P)]
+const Wφ1P = @SVector [W[g]*φ1P[g] for g in 1:npg]
+const Wφ2P = @SVector [W[g]*φ2P[g] for g in 1:npg]
+const WφP = SMatrix{npg, 2}([(W.*φ1P) (W.*φ2P)])
 
 ##################### Funções #####################
 

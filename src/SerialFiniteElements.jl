@@ -4,6 +4,7 @@ include("./MDEDiscretization.jl")
 
 using LinearAlgebra
 using SparseArrays
+using StaticArrays
 using .MDEDiscretization
 
 # Funções de elementos finitos
@@ -29,34 +30,29 @@ Essa função é implementada de forma sequencial.
 Retorna uma matriz esparsa de tipo `SparseMatrixCSC{Float64, Int64}` com a matriz de rigidez global.
 """
 function K_serial(ne::Int64, m::Int64, h::Float64, npg::Int64,
-                  alpha::Float64, beta::Float64, gamma::Float64, EQoLG::Matrix{Int64})::SparseMatrixCSC{Float64, Int64}
-    @views begin
-        # Alocando a matriz K estendida
-        K = spzeros(Float64, ne, ne)
-        # Construindo a K local
-        K_local = zeros(Float64, 2, 2)
-        K_local[1, 1] = dot(W, 2*alpha*(dφ1P.*dφ1P)/h + gamma*(φ1P.*dφ1P) + beta*h*(φ1P.*φ1P)/2)
-        K_local[1, 2] = dot(W, 2*alpha*(dφ1P.*dφ2P)/h + gamma*(φ1P.*dφ2P) + beta*h*(φ1P.*φ2P)/2)
-        K_local[2, 1] = dot(W, 2*alpha*(dφ2P.*dφ1P)/h + gamma*(φ2P.*dφ1P) + beta*h*(φ2P.*φ1P)/2)
-        K_local[2, 2] = dot(W, 2*alpha*(dφ2P.*dφ2P)/h + gamma*(φ2P.*dφ2P) + beta*h*(φ2P.*φ2P)/2)
-        # Construindo a K global a partir da K local
-        # Lista para armazenar entradas da matriz esparsa
-        I, J, V = zeros(Int64, 4*ne), zeros(Int64, 4*ne), zeros(Float64, 4*ne)
-        @simd for idx in 0:3
-            i = div(idx, 2) + 1
-            j = (idx % 2) + 1
-            offset = idx*ne
-            @simd for e in 1:ne
-                pos = EQoLG[e, :]
-                I[e + offset] = pos[i]
-                J[e + offset] = pos[j]
-                V[e + offset] = K_local[i, j]
-            end
-        end
-        # Construindo a matriz esparsa com os valores acumulados
-        K = sparse(I, J, V, ne, ne)
-        return K
-    end
+	alpha::Float64, beta::Float64, gamma::Float64, EQoLG::Matrix{Int64})::SparseMatrixCSC{Float64, Int64}
+	@views begin
+		# Construindo a K local de maneira estática
+		K_local = @SMatrix [dot(W, @. 2*alpha*(dφ1P*dφ1P)/h + gamma*(φ1P*dφ1P) + beta*h*(φ1P*φ1P)/2) dot(W, @. 2*alpha*(dφ1P*dφ2P)/h + gamma*(φ1P*dφ2P) + beta*h*(φ1P*φ2P)/2);
+							dot(W, @. 2*alpha*(dφ2P*dφ1P)/h + gamma*(φ2P*dφ1P) + beta*h*(φ2P*φ1P)/2) dot(W, @. 2*alpha*(dφ2P*dφ2P)/h + gamma*(φ2P*dφ2P) + beta*h*(φ2P*φ2P)/2)]
+		# Lista para armazenar entradas da matriz esparsa
+		I, J, V = Vector{Int64}(undef, 4*ne), Vector{Int64}(undef, 4*ne), Vector{Float64}(undef, 4*ne)
+		# Determina os índices e os respectivos valores da matriz K
+		pos = 1
+		@inbounds for e in 1:ne
+			eq = EQoLG[e, :]
+			for a in 1:2
+				for b in 1:2
+					I[pos] = eq[a]
+					J[pos] = eq[b]
+					V[pos] = K_local[a, b]
+					pos += 1
+				end
+			end
+		end
+		# Retornando a matriz esparsa com os valores acumulados
+		return sparse(I, J, V, ne, ne)
+	end
 end
 
 @doc raw"""
